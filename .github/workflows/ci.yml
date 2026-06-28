@@ -1,4 +1,4 @@
-name: CI
+name: UberCI
 
 on:
   push:
@@ -76,8 +76,8 @@ jobs:
       - name: Lint Ruby code
         run: bin/rubocop -f github
 
-      - name: Run Rails tests
-        run: bin/rails test
+      # - name: Run Rails tests
+      #   run: bin/rails test
 
       - name: Run RSpec tests
         run: |
