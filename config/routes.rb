@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  post "signup", to: "auth#signup"
+  post "signup/customer", to: "auth#signup_customer", as: :signup_customer
+  post "signup/driver", to: "auth#signup_driver", as: :signup_driver
   post "login", to: "auth#login"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

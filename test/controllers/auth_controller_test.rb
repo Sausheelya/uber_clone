@@ -1,16 +1,17 @@
 require "test_helper"
 
 class AuthControllerTest < ActionDispatch::IntegrationTest
-  test "signup creates a user and returns a token" do
+  test "customer signup creates a user and returns a token" do
     assert_difference("User.count", 1) do
-      post signup_url,
+      post signup_customer_url,
         params: {
           user: {
             name: "Rider One",
             email: "RIDER@example.com",
             phone: "9999999999",
             password: "password123",
-            password_confirmation: "password123"
+            password_confirmation: "password123",
+            role: "driver"
           }
         },
         as: :json
@@ -25,9 +26,34 @@ class AuthControllerTest < ActionDispatch::IntegrationTest
     assert_nil body.dig("user", "password_digest")
   end
 
-  test "signup rejects invalid user data" do
+  test "driver signup creates a driver and returns a token" do
+    assert_difference("User.count", 1) do
+      post signup_driver_url,
+        params: {
+          user: {
+            name: "Driver One",
+            email: "DRIVER@example.com",
+            phone: "8888888888",
+            password: "password123",
+            password_confirmation: "password123",
+            role: "user"
+          }
+        },
+        as: :json
+    end
+
+    assert_response :created
+
+    body = JSON.parse(response.body)
+    assert body["token"].present?
+    assert_equal "driver@example.com", body.dig("user", "email")
+    assert_equal "driver", body.dig("user", "role")
+    assert_nil body.dig("user", "password_digest")
+  end
+
+  test "customer signup rejects invalid user data" do
     assert_no_difference("User.count") do
-      post signup_url,
+      post signup_customer_url,
         params: { user: { email: "", password: "password123" } },
         as: :json
     end
